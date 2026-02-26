@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fan's Club - Exclusive Membership</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background: #0a0a0a;
+            overflow-x: hidden;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Noto Sans JP', sans-serif;
+        }
+        
+        .font-jp {
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        
+        /* Animated gradient background */
+        .gradient-bg {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.15;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Floating particles */
+        .particle {
+            position: fixed;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: float 20s infinite linear;
+            z-index: -1;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+        }
+        
+        @keyframes float {
+            from { transform: translateY(100vh) translateX(0); }
+            to { transform: translateY(-100px) translateX(100px); }
+        }
+        
+        /* Card 3D effects */
+        .membership-card {
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+        }
+        
+        .membership-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+        }
+        
+        .membership-card.active {
+            transform: scale(1.05) translateY(-20px);
+            z-index: 10;
+        }
+        
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-strong {
+            background: rgba(20, 20, 20, 0.8);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        /* Feature reveal animation */
+        .feature-item {
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.4s ease;
+        }
+        
+        .feature-item.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* Holographic shine effect */
+        .holographic {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .holographic::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 70%
+            );
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            opacity: 0;
+        }
+        
+        .holographic:hover::before {
+            animation: shine 0.6s ease-in-out;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+        }
+        
+        /* Glow effects */
+        .glow-bronze { box-shadow: 0 0 30px rgba(205, 127, 50, 0.3); }
+        .glow-silver { box-shadow: 0 0 30px rgba(192, 192, 192, 0.3); }
+        .glow-gold { box-shadow: 0 0 40px rgba(255, 215, 0, 0.4); }
+        .glow-platinum { box-shadow: 0 0 50px rgba(229, 228, 226, 0.5), 0 0 80px rgba(100, 200, 255, 0.2); }
+        .glow-super { box-shadow: 0 0 60px rgba(0, 255, 136, 0.4), 0 0 100px rgba(0, 255, 136, 0.2); }
+        .glow-exclusive { box-shadow: 0 0 60px rgba(255, 0, 255, 0.4), 0 0 100px rgba(255, 0, 255, 0.2); }
+        .glow-vip { box-shadow: 0 0 60px rgba(255, 0, 85, 0.5), 0 0 100px rgba(255, 0, 85, 0.3); }
+        
+        /* Digital Membership Card Styles */
+        .digital-card {
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 1.586;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        
+        .digital-card:hover {
+            transform: rotateY(10deg) rotateX(5deg) scale(1.05);
+        }
+        
+        .card-bg-bronze { background: linear-gradient(135deg, #8B4513 0%, #CD7F32 50%, #8B4513 100%); }
+        .card-bg-silver { background: linear-gradient(135deg, #4a4a4a 0%, #C0C0C0 50%, #4a4a4a 100%); }
+        .card-bg-gold { background: linear-gradient(135deg, #B8860B 0%, #FFD700 50%, #B8860B 100%); }
+        .card-bg-platinum { background: linear-gradient(135deg, #2C3E50 0%, #E5E4E2 50%, #2C3E50 100%); }
+        .card-bg-super { background: linear-gradient(135deg, #004d40 0%, #00b894 50%, #004d40 100%); }
+        .card-bg-exclusive { background: linear-gradient(135deg, #4a0080 0%, #e056fd 50%, #4a0080 100%); }
+        .card-bg-vip { background: linear-gradient(135deg, #1a0033 0%, #ff0055 50%, #1a0033 100%); }
+        
+        .card-pattern {
+            position: absolute;
+            inset: 0;
+            opacity: 0.1;
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.1) 10px,
+                rgba(255,255,255,0.1) 20px
+            );
+        }
+        
+        .card-chip {
+            width: 50px;
+            height: 35px;
+            background: linear-gradient(135deg, #d4af37 0%, #f4e5c2 50%, #d4af37 100%);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .card-chip::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border: 1px solid rgba(0,0,0,0.2);
+            border-radius: 4px;
+        }
+        
+        .card-chip::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(0,0,0,0.3);
+            transform: translateY(-50%);
+        }
+        
+        .hologram {
+            width: 60px;
+            height: 40px;
+            background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
+            background-size: 200% 200%;
+            animation: hologramShift 3s ease infinite;
+            border-radius: 4px;
+            opacity: 0.8;
+        }
+        
+        @keyframes hologramShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .card-number {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 4px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .embossed {
+            text-shadow: 
+                -1px -1px 1px rgba(255,255,255,0.3),
+                1px 1px 1px rgba(0,0,0,0.8);
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* Pulse animation for CTA */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); }
+            50% { box-shadow: 0 0 40px rgba(255, 255, 255, 0.4); }
+        }
+        
+        .pulse-btn {
+            animation: pulse-glow 2s infinite;
+        }
+        
+        /* One-time payment badge styles */
+        .one-time-badge {
+            background: linear-gradient(90deg, #10b981, #059669);
+            color: white;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 9999px;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+        
+        .one-time-badge::before {
+            content: '✓';
+            font-size: 0.5rem;
+        }
+        
+        /* Recurring payment badge */
+        .recurring-badge {
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            color: white;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 9999px;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Glitch effect for VIP */
+        .glitch {
+            position: relative;
+            animation: glitch-skew 1s infinite linear alternate-reverse;
+        }
+        
+        @keyframes glitch-skew {
+            0% { transform: skew(0deg); }
+            20% { transform: skew(-2deg); }
+            40% { transform: skew(2deg); }
+            60% { transform: skew(0deg); }
+            80% { transform: skew(1deg); }
+            100% { transform: skew(0deg); }
+        }
+        
+        .vip-text {
+            background: linear-gradient(45deg, #ff0055, #ff00aa, #ff0055);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 2s ease infinite;
+            font-weight: 900;
+        }
+        
+        .super-text {
+            background: linear-gradient(45deg, #00ff88, #00b894, #00ff88);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 2s ease infinite;
+            font-weight: 900;
+        }
+        
+        .exclusive-text {
+            background: linear-gradient(45deg, #e056fd, #ff00ff, #e056fd);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 2s ease infinite;
+            font-weight: 900;
+        }
+        
+        /* Benefits section styles */
+        .benefit-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .benefit-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="text-white min-h-screen">
+
+    <!-- Background Elements -->
+    <div class="gradient-bg"></div>
+    <div id="particles"></div>
+
+    <!-- Navigation - Simplified -->
+    <nav class="fixed top-0 w-full z-50 glass border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-violet-600 flex items-center justify-center font-bold text-xl">F</div>
+                <span class="font-display text-2xl font-bold tracking-tight">FAN'S CLUB</span>
+            </div>
+            <!-- Removed Sign In button and navigation menu -->
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 px-6 overflow-hidden">
+        <div class="max-w-7xl mx-auto text-center">
+            <div class="inline-block mb-4 px-4 py-1 rounded-full glass text-sm font-medium text-pink-300 border border-pink-500/30">
+                ✨ 世界中の50,000人以上のファンが参加中
+            </div>
+            <h1 class="font-display text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                あなたの<span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400">レガシー</span>を選ぼう
+            </h1>
+            <p class="text-xl text-gray-400 max-w-2xl mx-auto mb-12 leading-relaxed">
+                限定コンテンツ、舞台裏アクセス、VIP体験の特典をアンロック。
+                下の会員カードをクリックして詳細を確認してください。
+            </p>
+        </div>
+    </section>
+
+    <!-- Membership Cards Section -->
+    <section class="relative px-6 pb-20">
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- Cards Grid - 7 columns -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3 mb-16" id="cardsContainer">
+                
+                <!-- Bronze Card - ¥2,000 every 4 months -->
+                <div class="membership-card glass rounded-2xl p-4 holographic glow-bronze relative group" 
+                     onclick="selectTier('bronze')" data-tier="bronze">
+                    <div class="absolute top-3 right-3 w-2 h-2 rounded-full bg-orange-400 animate-pulse"></div>
+                    <div class="mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-600 to-amber-800 flex items-center justify-center mb-2 text-xl">🥉</div>
+                        <h3 class="font-display text-lg font-bold text-orange-200">Bronze</h3>
+                        <p class="text-orange-400/80 text-xs mt-0.5">スターター</p>
+                    </div>
+                    <div class="flex items-center gap-1 mb-1 flex-wrap">
+                        <span class="text-xl font-bold font-display">¥2,000</span>
+                        <span class="recurring-badge">4ヶ月</span>
+                    </div>
+                    <ul class="space-y-1 text-xs text-gray-400 mb-3">
+                        <li class="flex items-center gap-1"><span class="text-orange-400 text-xs">✓</span> 基本アクセス</li>
+                        <li class="flex items-center gap-1"><span class="text-orange-400 text-xs">✓</span> 月次ニュース</li>
+                    </ul>
+                    <button class="w-full py-1.5 rounded-lg bg-orange-500/20 hover:bg-orange-500/30 border border-orange-500/50 text-orange-300 text-xs font-medium transition-all">
+                        詳細を見る
+                    </button>
+                </div>
+
+                <!-- Silver Card - ¥5,000 yearly -->
+                <div class="membership-card glass rounded-2xl p-4 holographic glow-silver relative group" 
+                     onclick="selectTier('silver')" data-tier="silver">
+                    <div class="absolute top-3 right-3 w-2 h-2 rounded-full bg-gray-300 animate-pulse"></div>
+                    <div class="mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-300 to-gray-500 flex items-center justify-center mb-2 text-xl">🥈</div>
+                        <h3 class="font-display text-lg font-bold text-gray-200">Silver</h3>
+                        <p class="text-gray-400 text-xs mt-0.5">ファン</p>
+                    </div>
+                    <div class="flex items-center gap-1 mb-1 flex-wrap">
+                        <span class="text-xl font-bold font-display">¥5,000</span>
+                        <span class="recurring-badge">年間</span>
+                    </div>
+                    <ul class="space-y-1 text-xs text-gray-400 mb-3">
+                        <li class="flex items-center gap-1"><span class="text-gray-300 text-xs">✓</span> Bronze全機能</li>
+                        <li class="flex items-center gap-1"><span class="text-gray-300 text-xs">✓</span> 先行アクセス</li>
+                    </ul>
+                    <button class="w-full py-1.5 rounded-lg bg-gray-500/20 hover:bg-gray-500/30 border border-gray-400/50 text-gray-300 text-xs font-medium transition-all">
+                        詳細を見る
+                    </button>
+                </div>
+
+                <!-- Gold Card - ¥8,000 for 6 years (one-time) -->
+                <div class="membership-card glass rounded-2xl p-4 holographic glow-gold relative group" 
+                     onclick="selectTier('gold')" data-tier="gold">
+                    <div class="absolute -top-2 -right-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-black text-xs font-bold px-2 py-0.5 rounded-full transform rotate-12">
+                        人気
+                    </div>
+                    <div class="absolute top-3 right-3 w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></div>
+                    <div class="mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-300 to-yellow-600 flex items-center justify-center mb-2 text-xl">🥇</div>
+                        <h3 class="font-display text-lg font-bold text-yellow-200">Gold</h3>
+                        <p class="text-yellow-400/80 text-xs mt-0.5">メガファン</p>
+                    </div>
+                    <div class="flex items-center gap-1 mb-1 flex-wrap">
+                        <span class="text-xl font-bold font-display text-yellow-400">¥8,000</span>
+                        <span class="one-time-badge">一括</span>
+                    </div>
+                    <div class="text-xs text-green-400 mb-1">6年間有効</div>
+                    <ul class="space-y-1 text-xs text-gray-400 mb-3">
+                        <li class="flex items-center gap-1"><span class="text-yellow-400 text-xs">✓</span> 全機能</li>
+                        <li class="flex items-center gap-1"><span class="text-yellow-400 text-xs">✓</span> 限定グッズ</li>
+                    </ul>
+                    <button class="w-full py-1.5 rounded-lg bg-yellow-500/20 hover:bg-yellow-500/30 border border-yellow-500/50 text-yellow-300 text-xs font-medium transition-all">
+                        詳細を見る
+                    </button>
+                </div>
+
+                <!-- Platinum Card - ¥15,000 (one-time) -->
+                <div class="membership-card glass rounded-2xl p-4 holographic glow-platinum relative group border-purple-500/30" 
+                     onclick="selectTier('platinum')" data-tier="platinum">
+                    <div class="absolute top-3 right-3 w-2 h-2 rounded-full bg-purple-400 animate-pulse shadow-[0_0_10px_rgba(168,85,247,0.8)]"></div>
+                    <div class="mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-400 via-pink-400 to-cyan-400 flex items-center justify-center mb-2 text-lg animate-pulse">💎</div>
+                        <h3 class="font-display text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-pink-300">Platinum</h3>
+                        <p class="text-purple-300/80 text-xs mt-0.5">プレミアム</p>
+                    </div>
+                    <div class="flex items-center gap-1 mb-1 flex-wrap">
+                        <span class="text-xl font-bold font-display text-white">¥15,000</span>
+                        <span class="one-time-badge">一括</span>
+                    </div>
+                    <div class="text-xs text-green-400 mb-1">生涯アクセス</div>
+                    <ul class="space-y-1 text-xs text-gray-400 mb-3">
+                        <li class="flex items-cen
